@@ -73,7 +73,7 @@ namespace WoTHack
             MessageBox.Show(text, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        private void DetachHack()
+        private void DetachHacks()
         {
             timer.Stop();
 
@@ -91,7 +91,7 @@ namespace WoTHack
             {
                 try
                 {
-                    DetachHack();
+                    DetachHacks();
                     ResetButtonText(false);
                 }
                 catch (Exception ex)
@@ -108,9 +108,17 @@ namespace WoTHack
                 return;
             }
 
-            if (Process.GetProcessById(procInfo.Id) == null)
+            try
             {
-                ShowError(string.Format("Can't find process '{0}'!", procInfo.DisplayName));
+                if (Process.GetProcessById(procInfo.Id) == null)
+                {
+                    ShowError(string.Format("Can't find process '{0}'!", procInfo.DisplayName));
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(string.Format("Error: {0}", ex.Message));
                 return;
             }
 
@@ -121,7 +129,7 @@ namespace WoTHack
                 var now = DateTime.Now;
                 while (!pd.WaitForComeUp(50) && now.MSecToNow() < 1000)
                 { }
-                InstallHacks();
+                ToggleHacks();
             }
             catch (Exception ex)
             {
@@ -130,23 +138,6 @@ namespace WoTHack
             }
 
             ResetButtonText(true);
-        }
-
-        void InstallHacks()
-        {
-            if (threadWayRadioButton.Checked)
-            {
-                timer.Start();
-                return;
-            }
-
-            if (noTreesCheckBox.Checked)
-            {
-                pd.AddBreakPoint(new SniperTreeHackBP1(), pd.Process.MainModule.BaseAddress);
-                pd.AddBreakPoint(new SniperTreeHackBP2(), pd.Process.MainModule.BaseAddress);
-                if (inBothModesCheckBox.Checked)
-                    pd.AddBreakPoint(new NoSniperTreeHackBP(), pd.Process.MainModule.BaseAddress);
-            }
         }
 
         private void ResetButtonText(bool attached)
@@ -161,7 +152,7 @@ namespace WoTHack
         {
             try
             {
-                DetachHack();
+                DetachHacks();
             }
             catch (Exception)
             {
@@ -172,63 +163,47 @@ namespace WoTHack
         {
             inBothModesCheckBox.Enabled = noTreesCheckBox.Checked;
 
-            if (pd == null)
-                return;
-
-            if (!bpWayRadioButton.Checked)
-                return;
-
-            if (!noTreesCheckBox.Checked)
-            {
-                pd.RemoveBreakPoint(SniperTreeHackBP1.Addr.Add(pd.Process.MainModule.BaseAddress));
-                pd.RemoveBreakPoint(SniperTreeHackBP2.Addr.Add(pd.Process.MainModule.BaseAddress));
-                pd.RemoveBreakPoint(NoSniperTreeHackBP.Addr.Add(pd.Process.MainModule.BaseAddress));
-            }
-            else
-            {
-                pd.AddBreakPoint(new SniperTreeHackBP1(), pd.Process.MainModule.BaseAddress);
-                pd.AddBreakPoint(new SniperTreeHackBP2(), pd.Process.MainModule.BaseAddress);
-                if (inBothModesCheckBox.Checked)
-                    pd.AddBreakPoint(new NoSniperTreeHackBP(), pd.Process.MainModule.BaseAddress);
-            }
+            ToggleHacks();
         }
 
         private void inBothModesCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (pd == null)
-                return;
-
-            if (!bpWayRadioButton.Checked)
-                return;
-
-            if (!inBothModesCheckBox.Checked)
-                pd.RemoveBreakPoint(NoSniperTreeHackBP.Addr.Add(pd.Process.MainModule.BaseAddress));
-            else if (noTreesCheckBox.Checked)
-                pd.AddBreakPoint(new NoSniperTreeHackBP(), pd.Process.MainModule.BaseAddress);
+            ToggleHacks();
         }
 
         private void bpWayRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             threadWayRadioButton.Checked = !bpWayRadioButton.Checked;
 
-            if (bpWayRadioButton.Checked && pd != null)
-            {
-                timer.Stop();
-                InstallHacks();
-            }
+            ToggleHacks();
         }
 
         private void threadWayRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             bpWayRadioButton.Checked = !threadWayRadioButton.Checked;
 
+            ToggleHacks();
+        }
+
+
+        private void ToggleHacks()
+        {
+            if (pd == null)
+                return;
+
+            pd.RemoveBreakPoints();
+            timer.Stop();
+
             if (threadWayRadioButton.Checked)
             {
-                if (pd != null)
-                    pd.RemoveBreakPoints();
-
-                InstallHacks();
+                timer.Start();
+                return;
             }
+
+            if (noTreesCheckBox.Checked)
+                pd.AddBreakPoint(new TreeRaidusBp(), pd.Process.MainModule.BaseAddress);
+            if (noTreesCheckBox.Checked && inBothModesCheckBox.Checked)
+                pd.AddBreakPoint(new AlwaysSniperBP(), pd.Process.MainModule.BaseAddress);
         }
     }
 }
