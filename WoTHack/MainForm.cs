@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 using WhiteMagic;
 
 namespace WoTHack
@@ -17,6 +18,8 @@ namespace WoTHack
         ProcessDebugger pd = null;
 
         List<ProcessInfo> wotProcesses = new List<ProcessInfo>();
+        List<Key> keyBinds = new List<Key>();
+        Key toggleTreesKey = Key.None;
 
         Timer timer = new Timer();
 
@@ -25,25 +28,43 @@ namespace WoTHack
             InitializeComponent();
             ResetButtonText(false);
 
-            timer.Interval = 500;
+            timer.Interval = 200;
             timer.Tick += new EventHandler(OnTimerTick);
-            //timer.Start();
+
+            keyBinds = Enum.GetValues(typeof(Key)).Cast<Key>().ToList();
+            treeToggleKeyComboBox.DataSource = keyBinds;
+            treeToggleKeyComboBox.SelectedIndex = keyBinds.IndexOf(Key.E);
+            toggleTreesKey = (Key)treeToggleKeyComboBox.SelectedValue;
+            //MessageBox.Show(treeToggleKeyComboBox.SelectedValue.ToString());
         }
+
+        static bool toggleState = false;
 
         void OnTimerTick(object obj, EventArgs args)
         {
             if (pd == null)
                 return;
 
+            var newState = Keyboard.IsKeyDown(toggleTreesKey);
+            if (newState == toggleState)
+                return;
+
+            toggleState = newState;
+
+            if (!noTreesCheckBox.Checked || !inBothModesCheckBox.Checked)
+                return;
+
             using (var suspender = pd.MakeSuspender())
             {
-                if (noTreesCheckBox.Checked && inBothModesCheckBox.Checked)
-                    pd.Write<byte>(pd.Process.MainModule.BaseAddress.Add(0x21335E0 - 0x400000), 1);
-                if (noTreesCheckBox.Checked)
+                if (toggleState)
                 {
-                    pd.Write<float>(pd.Process.MainModule.BaseAddress.Add(0x21335E4 - 0x400000), 1000 * 1000);
-                    pd.Write<float>(pd.Process.MainModule.BaseAddress.Add(0x21335E8 - 0x400000), 1000);
-                    pd.Write<float>(pd.Process.MainModule.BaseAddress.Add(0x21335EC - 0x400000), 1000);
+                    AlwaysSniperBP.WriteVals(false, pd);
+                    TreeRaidusBp.WriteVals(10, 15, pd);
+                }
+                else
+                {
+                    AlwaysSniperBP.WriteVals(true, pd);
+                    TreeRaidusBp.WriteVals(1000, 1000, pd);
                 }
             }
         }
@@ -171,21 +192,6 @@ namespace WoTHack
             ToggleHacks();
         }
 
-        private void bpWayRadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-            threadWayRadioButton.Checked = !bpWayRadioButton.Checked;
-
-            ToggleHacks();
-        }
-
-        private void threadWayRadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-            bpWayRadioButton.Checked = !threadWayRadioButton.Checked;
-
-            ToggleHacks();
-        }
-
-
         private void ToggleHacks()
         {
             if (pd == null)
@@ -194,16 +200,16 @@ namespace WoTHack
             pd.RemoveBreakPoints();
             timer.Stop();
 
-            if (threadWayRadioButton.Checked)
-            {
-                timer.Start();
-                return;
-            }
-
+            timer.Start();
             if (noTreesCheckBox.Checked)
                 pd.AddBreakPoint(new TreeRaidusBp(), pd.Process.MainModule.BaseAddress);
             if (noTreesCheckBox.Checked && inBothModesCheckBox.Checked)
                 pd.AddBreakPoint(new AlwaysSniperBP(), pd.Process.MainModule.BaseAddress);
+        }
+
+        private void treeToggleKeyComboBox_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            toggleTreesKey = (Key)treeToggleKeyComboBox.SelectedValue;
         }
     }
 }

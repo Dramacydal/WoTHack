@@ -32,8 +32,8 @@
             this.noTreesCheckBox = new System.Windows.Forms.CheckBox();
             this.inBothModesCheckBox = new System.Windows.Forms.CheckBox();
             this.startStopButton = new System.Windows.Forms.Button();
-            this.bpWayRadioButton = new System.Windows.Forms.RadioButton();
-            this.threadWayRadioButton = new System.Windows.Forms.RadioButton();
+            this.treeToggleKeyComboBox = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // processesComboBox
@@ -50,7 +50,7 @@
             // noTreesCheckBox
             // 
             this.noTreesCheckBox.AutoSize = true;
-            this.noTreesCheckBox.Location = new System.Drawing.Point(12, 68);
+            this.noTreesCheckBox.Location = new System.Drawing.Point(12, 39);
             this.noTreesCheckBox.Name = "noTreesCheckBox";
             this.noTreesCheckBox.Size = new System.Drawing.Size(66, 17);
             this.noTreesCheckBox.TabIndex = 1;
@@ -62,7 +62,7 @@
             // 
             this.inBothModesCheckBox.AutoSize = true;
             this.inBothModesCheckBox.Enabled = false;
-            this.inBothModesCheckBox.Location = new System.Drawing.Point(12, 91);
+            this.inBothModesCheckBox.Location = new System.Drawing.Point(12, 62);
             this.inBothModesCheckBox.Name = "inBothModesCheckBox";
             this.inBothModesCheckBox.Size = new System.Drawing.Size(93, 17);
             this.inBothModesCheckBox.TabIndex = 2;
@@ -80,37 +80,32 @@
             this.startStopButton.UseVisualStyleBackColor = true;
             this.startStopButton.Click += new System.EventHandler(this.startStopButton_Click);
             // 
-            // bpWayRadioButton
+            // treeToggleKeyComboBox
             // 
-            this.bpWayRadioButton.AutoSize = true;
-            this.bpWayRadioButton.Checked = true;
-            this.bpWayRadioButton.Location = new System.Drawing.Point(12, 12);
-            this.bpWayRadioButton.Name = "bpWayRadioButton";
-            this.bpWayRadioButton.Size = new System.Drawing.Size(101, 17);
-            this.bpWayRadioButton.TabIndex = 4;
-            this.bpWayRadioButton.TabStop = true;
-            this.bpWayRadioButton.Text = "Breakpoint Way";
-            this.bpWayRadioButton.UseVisualStyleBackColor = true;
-            this.bpWayRadioButton.CheckedChanged += new System.EventHandler(this.bpWayRadioButton_CheckedChanged);
+            this.treeToggleKeyComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.treeToggleKeyComboBox.FormattingEnabled = true;
+            this.treeToggleKeyComboBox.Location = new System.Drawing.Point(12, 106);
+            this.treeToggleKeyComboBox.Name = "treeToggleKeyComboBox";
+            this.treeToggleKeyComboBox.Size = new System.Drawing.Size(77, 21);
+            this.treeToggleKeyComboBox.TabIndex = 4;
+            this.treeToggleKeyComboBox.SelectionChangeCommitted += new System.EventHandler(this.treeToggleKeyComboBox_SelectionChangeCommitted);
             // 
-            // threadWayRadioButton
+            // label1
             // 
-            this.threadWayRadioButton.AutoSize = true;
-            this.threadWayRadioButton.Location = new System.Drawing.Point(12, 35);
-            this.threadWayRadioButton.Name = "threadWayRadioButton";
-            this.threadWayRadioButton.Size = new System.Drawing.Size(84, 17);
-            this.threadWayRadioButton.TabIndex = 5;
-            this.threadWayRadioButton.Text = "Thread Way";
-            this.threadWayRadioButton.UseVisualStyleBackColor = true;
-            this.threadWayRadioButton.CheckedChanged += new System.EventHandler(this.threadWayRadioButton_CheckedChanged);
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 87);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(86, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Tree Toggle Key";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(293, 139);
-            this.Controls.Add(this.threadWayRadioButton);
-            this.Controls.Add(this.bpWayRadioButton);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.treeToggleKeyComboBox);
             this.Controls.Add(this.startStopButton);
             this.Controls.Add(this.inBothModesCheckBox);
             this.Controls.Add(this.noTreesCheckBox);
@@ -129,8 +124,8 @@
         private System.Windows.Forms.CheckBox noTreesCheckBox;
         private System.Windows.Forms.CheckBox inBothModesCheckBox;
         private System.Windows.Forms.Button startStopButton;
-        private System.Windows.Forms.RadioButton bpWayRadioButton;
-        private System.Windows.Forms.RadioButton threadWayRadioButton;
+        private System.Windows.Forms.ComboBox treeToggleKeyComboBox;
+        private System.Windows.Forms.Label label1;
     }
 }
 
