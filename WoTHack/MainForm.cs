@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 using System.Windows.Input;
 using WhiteMagic;
@@ -22,6 +19,8 @@ namespace WoTHack
         Key toggleTreesKey = Key.None;
 
         Timer timer = new Timer();
+
+        static byte[] hash = { 0x30, 0x9F, 0x21, 0xDC, 0x2A, 0x30, 0xB8, 0x07, 0xA0, 0xCA, 0xC5, 0x6D, 0xEC, 0xFC, 0xA7, 0x85 };
 
         public MainForm()
         {
@@ -52,6 +51,10 @@ namespace WoTHack
             toggleState = newState;
 
             if (!noTreesCheckBox.Checked || !inBothModesCheckBox.Checked)
+                return;
+
+            pd.Refresh();
+            if (pd.HasExited)
                 return;
 
             using (var suspender = pd.MakeSuspender())
@@ -146,6 +149,13 @@ namespace WoTHack
             try
             {
                 pd = new ProcessDebugger(procInfo.Id);
+                using (var md5 = MD5.Create())
+                {
+                    var hash = md5.ComputeHash(File.ReadAllBytes(pd.Process.MainModule.FileName));
+                    Debug.WriteLine(string.Format("MD5: {0}", string.Join(", ", hash.Select(it => string.Format("0x{0:X2}", it)).ToArray())));
+                    if (!hash.SequenceEqual(MainForm.hash))
+                        throw new Exception("Hash does not match. Probably newer version of WoT executable.");
+                }
                 pd.Run();
                 var now = DateTime.Now;
                 while (!pd.WaitForComeUp(50) && now.MSecToNow() < 1000)

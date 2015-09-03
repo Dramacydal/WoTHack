@@ -7,11 +7,11 @@ namespace WoTHack
 {
     public class TreeRaidusBp : HardwareBreakPoint
     {
-        public static IntPtr Addr = new IntPtr(0x53C428 - 0x400000);
-        public static IntPtr pSqrRad = new IntPtr(0x21335E4 - 0x400000);
-        public static IntPtr pMaxRad = new IntPtr(0x21335E8 - 0x400000);
-        public static IntPtr pMinRad = new IntPtr(0x21335EC - 0x400000);
-
+        // wg_setTreeHidingRadius
+        public static IntPtr Addr = new IntPtr(0x526008 - 0x400000);
+        public static IntPtr pSqrRad = new IntPtr(0x160A7F4 - 0x400000);
+        public static IntPtr pMaxRad = new IntPtr(0x160A7FC - 0x400000);
+        public static IntPtr pMinRad = new IntPtr(0x160A7F8 - 0x400000);
 
         public static void WriteVals(float min, float max, MemoryHandler m)
         {
@@ -25,6 +25,7 @@ namespace WoTHack
         {
         }
 
+        // .text:00526008                 movss   dword_160A7F4, xmm1
         public override bool HandleException(ref CONTEXT ctx, ProcessDebugger pd)
         {
             ctx.Eip += 0x2;
@@ -36,12 +37,13 @@ namespace WoTHack
 
     public class AlwaysSniperBP : HardwareBreakPoint
     {
-        public static IntPtr Addr = new IntPtr(0x53B4CE - 0x400000);
-        private static IntPtr enabliHiding = new IntPtr(0x21335E0 - 0x400000);
+        public static IntPtr Addr = new IntPtr(0x5250AE - 0x400000);
+        // wg_enableTreeHiding
+        private static IntPtr enableHiding = new IntPtr(0x160A7D2 - 0x400000);
 
         public static void WriteVals(bool enable, MemoryHandler m)
         {
-            m.WriteByte(m.Process.MainModule.BaseAddress.Add(enabliHiding), enable ? (byte)1 : (byte)0);
+            m.WriteByte(m.Process.MainModule.BaseAddress.Add(enableHiding), enable ? (byte)1 : (byte)0);
         }
 
         public AlwaysSniperBP()
@@ -49,9 +51,10 @@ namespace WoTHack
         {
         }
 
+        // .text:005250AE                 mov     al, [ebp+var_1]
         public override bool HandleException(ref CONTEXT ctx, ProcessDebugger pd)
         {
-            ctx.Eip += 0x3;
+            ctx.Eip += 0xB1 - 0xAE;
             ctx.Al = 1;
             return true;
         }
