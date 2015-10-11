@@ -20,7 +20,7 @@ namespace WoTHack
 
         Timer timer = new Timer();
 
-        static byte[] hash = { 0x30, 0x9F, 0x21, 0xDC, 0x2A, 0x30, 0xB8, 0x07, 0xA0, 0xCA, 0xC5, 0x6D, 0xEC, 0xFC, 0xA7, 0x85 };
+        private static byte[] hash = { 0x9B, 0x7B, 0x7E, 0x23, 0x94, 0x32, 0xA9, 0x83, 0x2A, 0x74, 0x42, 0x84, 0xAC, 0x60, 0xCE, 0x48 };
 
         public MainForm()
         {
@@ -152,6 +152,7 @@ namespace WoTHack
                 using (var md5 = MD5.Create())
                 {
                     var hash = md5.ComputeHash(File.ReadAllBytes(pd.Process.MainModule.FileName));
+                    Debug.WriteLine(pd.Process.MainModule.FileVersionInfo);
                     Debug.WriteLine(string.Format("MD5: {0}", string.Join(", ", hash.Select(it => string.Format("0x{0:X2}", it)).ToArray())));
                     if (!hash.SequenceEqual(MainForm.hash))
                         throw new Exception("Hash does not match. Probably newer version of WoT executable.");
