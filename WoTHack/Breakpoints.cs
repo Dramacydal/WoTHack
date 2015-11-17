@@ -8,10 +8,10 @@ namespace WoTHack
     public class TreeRaidusBp : HardwareBreakPoint
     {
         // wg_setTreeHidingRadius
-        public static IntPtr Addr = new IntPtr(0x525CA8 - 0x400000);
-        public static IntPtr pSqrRad = new IntPtr(0x160A7FC - 0x400000);
-        public static IntPtr pMaxRad = new IntPtr(0x160A800 - 0x400000);
-        public static IntPtr pMinRad = new IntPtr(0x160A804 - 0x400000);
+        public static IntPtr Addr = new IntPtr(0x005350B8 - 0x400000);
+        public static IntPtr pSqrRad = new IntPtr(0x1B1671C - 0x400000);
+        public static IntPtr pMaxRad = new IntPtr(0x1B16720 - 0x400000);
+        public static IntPtr pMinRad = new IntPtr(0x1B16724 - 0x400000);
 
         public static void WriteVals(float min, float max, MemoryHandler m)
         {
@@ -25,10 +25,10 @@ namespace WoTHack
         {
         }
 
-        // .text:00525CA8                 movss   dword_160A7FC, xmm1
+        // .text:005350B8                 movss   dword_1B1671C, xmm1
         public override bool HandleException(ref CONTEXT ctx, ProcessDebugger pd)
         {
-            ctx.Eip += 0x2;
+            ctx.Eip += 0x8;
 
             WriteVals(1000, 1000, pd);
             return true;
@@ -37,9 +37,9 @@ namespace WoTHack
 
     public class AlwaysSniperBP : HardwareBreakPoint
     {
-        public static IntPtr Addr = new IntPtr(0x524D4E - 0x400000);
+        public static IntPtr Addr = new IntPtr(0x00533A4E - 0x400000);
         // wg_enableTreeHiding
-        private static IntPtr enableHiding = new IntPtr(0x160A7DA - 0x400000);
+        private static IntPtr enableHiding = new IntPtr(0x1B16718 - 0x400000);
 
         public static void WriteVals(bool enable, MemoryHandler m)
         {
@@ -51,7 +51,7 @@ namespace WoTHack
         {
         }
 
-        // .text:00524D4E                 mov     al, [ebp+var_1]
+        // .text:00533A4E                 mov     al, [ebp+var_1]
         public override bool HandleException(ref CONTEXT ctx, ProcessDebugger pd)
         {
             ctx.Eip += 0x51 - 0x4E;
