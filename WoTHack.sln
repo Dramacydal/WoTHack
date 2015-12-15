@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WoTHack", "WoTHack\WoTHack.csproj", "{8C442989-8820-4FA3-9691-0E0A6CEDD645}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhiteMagic", "WhiteMagic\WhiteMagic\WhiteMagic.csproj", "{53C8BF13-5CA8-4A11-83AE-6A9E1A7D9CD4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8C442989-8820-4FA3-9691-0E0A6CEDD645}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C442989-8820-4FA3-9691-0E0A6CEDD645}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C442989-8820-4FA3-9691-0E0A6CEDD645}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C442989-8820-4FA3-9691-0E0A6CEDD645}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53C8BF13-5CA8-4A11-83AE-6A9E1A7D9CD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53C8BF13-5CA8-4A11-83AE-6A9E1A7D9CD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53C8BF13-5CA8-4A11-83AE-6A9E1A7D9CD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53C8BF13-5CA8-4A11-83AE-6A9E1A7D9CD4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
