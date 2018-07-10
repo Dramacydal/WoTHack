@@ -1,61 +1,60 @@
-﻿using System;
-using WhiteMagic;
-using WhiteMagic.WinAPI;
-using WhiteMagic.WinAPI.Types;
+﻿using WhiteMagic;
+using WhiteMagic.Breakpoints;
+using WhiteMagic.Pointers;
 
 namespace WoTHack
 {
-    public class TreeRaidusBp : HardwareBreakPoint
+    public class TreeRaidusBp : CodeBreakpoint
     {
         // wg_setTreeHidingRadius
-        public static IntPtr Addr = new IntPtr(0x00536238 - 0x400000);
-        public static IntPtr pSqrRad = new IntPtr(0x1B134EC - 0x400000);
-        public static IntPtr pMaxRad = new IntPtr(0x1B134F0 - 0x400000);
-        public static IntPtr pMinRad = new IntPtr(0x1B134F4 - 0x400000);
+        public static ModulePointer Addr = new ModulePointer(0x00536238 - 0x400000);
+        public static ModulePointer pSqrRad = new ModulePointer(0x1B134EC - 0x400000);
+        public static ModulePointer pMaxRad = new ModulePointer(0x1B134F0 - 0x400000);
+        public static ModulePointer pMinRad = new ModulePointer(0x1B134F4 - 0x400000);
 
         public static void WriteVals(float min, float max, MemoryHandler m)
         {
-            m.Write<float>(m.Process.MainModule.BaseAddress.Add(pSqrRad), min * max);
-            m.Write<float>(m.Process.MainModule.BaseAddress.Add(pMaxRad), max);
-            m.Write<float>(m.Process.MainModule.BaseAddress.Add(pMinRad), min);
+            m.Write(pSqrRad, min * max);
+            m.Write(pMaxRad, max);
+            m.Write(pMinRad, min);
         }
 
         public TreeRaidusBp()
-            : base(Addr, 1, BreakpointCondition.Code)
+            : base(Addr)
         {
         }
 
         // .text:00536238 F3 0F 11 0D EC+                movss   dword_1B134EC, xmm1
-        public override bool HandleException(ref CONTEXT ctx, ProcessDebugger pd)
+        public override bool HandleException(ContextWrapper Wrapper)
         {
-            ctx.Eip += 8;
+            Wrapper.Context.Eip += 8;
 
-            WriteVals(1000, 1000, pd);
+            WriteVals(1000, 1000, Wrapper.Debugger);
             return true;
         }
     }
 
-    public class AlwaysSniperBP : HardwareBreakPoint
+    public class AlwaysSniperBP : CodeBreakpoint
     {
-        public static IntPtr Addr = new IntPtr(0x00534BCE - 0x400000);
+        public static ModulePointer Addr = new ModulePointer(0x00534BCE - 0x400000);
         // wg_enableTreeHiding
-        private static IntPtr enableHiding = new IntPtr(0x1B134E8 - 0x400000);
+        private static ModulePointer enableHiding = new ModulePointer(0x1B134E8 - 0x400000);
 
         public static void WriteVals(bool enable, MemoryHandler m)
         {
-            m.WriteByte(m.Process.MainModule.BaseAddress.Add(enableHiding), enable ? (byte)1 : (byte)0);
+            m.Write(enableHiding, enable ? (byte)1 : (byte)0);
         }
 
         public AlwaysSniperBP()
-            : base(Addr, 1, BreakpointCondition.Code)
+            : base(Addr)
         {
         }
 
         // .text:00534BCE 8A 45 FF                       mov     al, [ebp+var_1
-        public override bool HandleException(ref CONTEXT ctx, ProcessDebugger pd)
+        public override bool HandleException(ContextWrapper Wrapper)
         {
-            ctx.Eip += 3;
-            ctx.Al = 1;
+            Wrapper.Context.Eip += 3;
+            Wrapper.Context.Al = 1;
             return true;
         }
     }

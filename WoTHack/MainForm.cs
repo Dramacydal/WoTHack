@@ -53,7 +53,7 @@ namespace WoTHack
             if (!noTreesCheckBox.Checked || !inBothModesCheckBox.Checked)
                 return;
 
-            pd.Refresh();
+            pd.RefreshMemory();
             if (pd.HasExited)
                 return;
 
@@ -213,9 +213,9 @@ namespace WoTHack
 
             timer.Start();
             if (noTreesCheckBox.Checked)
-                pd.AddBreakPoint(new TreeRaidusBp(), pd.Process.MainModule.BaseAddress);
+                pd.AddBreakPoint(new TreeRaidusBp());
             if (noTreesCheckBox.Checked && inBothModesCheckBox.Checked)
-                pd.AddBreakPoint(new AlwaysSniperBP(), pd.Process.MainModule.BaseAddress);
+                pd.AddBreakPoint(new AlwaysSniperBP());
         }
 
         private void treeToggleKeyComboBox_SelectionChangeCommitted(object sender, EventArgs e)
