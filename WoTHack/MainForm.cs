@@ -20,7 +20,7 @@ namespace WoTHack
 
         Timer timer = new Timer();
 
-        private static byte[] hash = { 0x0C, 0x3B, 0x67, 0x69, 0x41, 0x40, 0xE8, 0x98, 0xD8, 0x81, 0xAF, 0xAD, 0xFC, 0x69, 0x2B, 0xEC };
+        private static byte[] hash = { 0xAD, 0x4C, 0xE8, 0x35, 0x14, 0x88, 0xE6, 0x79, 0x74, 0xB0, 0x5C, 0xE8, 0x8E, 0xF7, 0x4A, 0x21 };
 
         public MainForm()
         {
@@ -34,7 +34,6 @@ namespace WoTHack
             treeToggleKeyComboBox.DataSource = keyBinds;
             treeToggleKeyComboBox.SelectedIndex = keyBinds.IndexOf(Key.E);
             toggleTreesKey = (Key)treeToggleKeyComboBox.SelectedValue;
-            //MessageBox.Show(treeToggleKeyComboBox.SelectedValue.ToString());
         }
 
         static bool toggleState = false;
@@ -61,11 +60,17 @@ namespace WoTHack
             {
                 if (toggleState)
                 {
+                    AlwaysSniperBP.Enabled = false;
+                    TreeRaidusBp.Enabled = false;
+
                     AlwaysSniperBP.WriteVals(false, pd);
                     TreeRaidusBp.WriteVals(10, 15, pd);
                 }
                 else
                 {
+                    AlwaysSniperBP.Enabled = true;
+                    TreeRaidusBp.Enabled = true;
+
                     AlwaysSniperBP.WriteVals(true, pd);
                     TreeRaidusBp.WriteVals(1000, 1000, pd);
                 }
